@@ -463,6 +463,7 @@ end;
 procedure TFileWriter.Start;
 var
   sFileName : string;
+  BOM: TBytes;
 begin
   InitializeCriticalSection(FCriticalSection);
   FStarted  := True;
@@ -475,20 +476,24 @@ begin
       FFileStream.Seek(0, soFromEnd);
     end
     else
+    begin
       FFileStream := TFileStream.Create(sFileName, fmCreate or fmShareDenyWrite);
+      BOM := TEncoding.UTF8.GetPreamble;
+      FFileStream.WriteBuffer(Bom[0], Length(BOM));
+    end;
   end;
 end;
 
 procedure TFileWriter.Write(const aInfo: string);
 var
-  Bytes: TBytes;
+  Buff: TBytes;
 begin
   if FStarted then
   begin
     EnterCriticalSection(FCriticalSection);
     try
-      Bytes := WideBytesOf(aInfo);
-      FFileStream.WriteBuffer(Bytes[0], Length(Bytes));
+      Buff := TEncoding.UTF8.GetBytes(aInfo);
+      FFileStream.WriteBuffer(Buff, Length(Buff));
     finally
       LeaveCriticalSection(FCriticalSection);
     end;

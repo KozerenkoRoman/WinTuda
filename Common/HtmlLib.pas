@@ -121,6 +121,7 @@ type
     class function GetColorTag(aText: string; aColor: string): string; overload;
     class function GetSpoilerTag(aCaption, aText: string; aTdStyle: string = ''): string;
     class function GetSrcSQLTag(aCaption, aText: string): string;
+    class function GetSrcXMLTag(aCaption, aText: string): string;
 
     class function GetBoldText(aText: string): string;
     class function GetCenterText(aText: string): string;
@@ -374,22 +375,42 @@ begin
                    '</td></tr>');
 end;
 
-class function THtmlLib.GetSrcSQLTag(aCaption, aText: string): string;
+class function THtmlLib.GetSrcXMLTag(aCaption, aText: string): string;
 begin
   if (Trim(aText) <> '') then
     Result := Concat(
-                     '<table width="96%" border="0" bgcolor="#c0c0c0" cellspacing="0" cellpadding="4" style="border:solid 1px #888888; margin :10px">',
-                       '<tr height="1">',
+                     '<table>',
+                       '<tr>',
                          '<td>',
                            aCaption,
                          '</td>',
                        '</tr>',
                        '<tr>',
-                         '<td bgcolor="#E8E8E8"><pre>',
+                         '<td>',
+                           XmlToHtml(aText),
+                         '</td>',
+                      '</tr>',
+                    '</table>'
+                    );
+end;
+
+class function THtmlLib.GetSrcSQLTag(aCaption, aText: string): string;
+begin
+  if (Trim(aText) <> '') then
+    Result := Concat(
+                     '<table>',
+                       '<tr>',
+                         '<td>',
+                           aCaption,
+                         '</td>',
+                       '</tr>',
+                       '<tr>',
+                         '<td class="sql-code"><pre>',
                            SqlToHtml(aText),
                          '</pre></td>',
                       '</tr>',
-                    '</table>');
+                    '</table>'
+                    );
 end;
 
 class function THtmlLib.GetTableLineTag(aLineText: Variant): string;

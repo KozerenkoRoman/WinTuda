@@ -181,5 +181,6 @@ object frmMain: TfrmMain
     Anchors = []
     Caption = 'Go'
     TabOrder = 5
+    OnClick = btnGoClick
   end
 end

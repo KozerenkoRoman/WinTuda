@@ -7,7 +7,8 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Translate.Lang, Vcl.ExtCtrls, DebugWriter,
-  Common.Types, System.IniFiles, System.IOUtils, Global.Resources, Utils, MessageDialog, System.Threading;
+  Common.Types, System.IniFiles, System.IOUtils, Global.Resources, Utils, MessageDialog, System.Threading,
+  HtmlLib;
 {$ENDREGION}
 
 type
@@ -29,12 +30,14 @@ type
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure lblAtmCfgClick(Sender: TObject);
+    procedure btnGoClick(Sender: TObject);
   private
-    FLang: TLang;
     FAtmCfg: TIniFile;
+    FLang: TLang;
     FScriptDir: string;
-    procedure Translite(aLang: TLanguage);
     function CheckData: Boolean;
+    procedure Translite(aLang: TLanguage);
+    procedure LoadScripts;
   public
     procedure Initialize;
   end;
@@ -110,6 +113,18 @@ begin
   lblSQLVersionCaption.Caption    := FLang.Translate('SQLVersion');
 end;
 
+procedure TfrmMain.btnGoClick(Sender: TObject);
+begin
+  LogWriter.Write(ddEnterMethod, Self, 'EnterMethod Example');
+  LogWriter.Write(ddError, Self, 'Error Example', Format(FLang.Translate('DirectoryNotFound'), [FScriptDir]));
+  LogWriter.Write(ddWarning, Self, 'Warning Example', Format(FLang.Translate('DirectoryNotFound'), [FScriptDir]));
+  LogWriter.Write(ddExitMethod, Self, 'ExitMethod Example');
+  LogWriter.Write(ddText, Self, 'Text Example');
+  LogWriter.Write(ddEnterMethod, Self, 'SQL Example');
+  LoadScripts;
+  LogWriter.Write(ddExitMethod, Self, 'SQL Example');
+end;
+
 procedure TfrmMain.cbLangChange(Sender: TObject);
 begin
   if (cbLang.ItemIndex > -1) then
@@ -131,6 +146,19 @@ begin
     TMessageDialog.ShowWarning(Problems + FLang.Translate('ProgramStopsWorking'));
     LogWriter.Write(ddError, Self, 'CheckData', Problems);
   end;
+end;
+
+procedure TfrmMain.LoadScripts;
+var
+  Files: TArray<string>;
+  ScriptText: string;
+begin
+   Files := TDirectory.GetFiles(FScriptDir, '*.sql');
+   for var ScriptFile in Files do
+   begin
+     ScriptText := TFile.ReadAllText(ScriptFile);
+     LogWriter.Write(ddText, Self, 'SQL Example', THtmlLib.GetSrcSQLTag(ScriptFile, ScriptText));
+   end;
 end;
 
 end.

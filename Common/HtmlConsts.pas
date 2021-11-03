@@ -47,7 +47,10 @@ const
   C_HTML_STYLE_CLOSE = '</style>';
 
   C_STYLE_XML_CODE = '.xml-code{}';
-  C_STYLE_SQL_CODE = '.sql-code{}';
+  C_STYLE_SQL_CODE = '.sql-code{' +
+                                'padding: 0 15px 0 15px;' +
+                                'background-color: white;' +
+                                '}';
   C_STYLE_HR       = 'hr{' +
                         'border:1px solid gray' +
                         '}';
