@@ -25,7 +25,6 @@ type
     lblCompatibilityCaption: TLabel;
     lblSQLVersion: TLabel;
     lblSQLVersionCaption: TLabel;
-    pnlInfo: TGridPanel;
     procedure cbLangChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -84,7 +83,7 @@ begin
     procedure()
     begin
       TThread.NameThreadForDebugging('TfrmMain.CheckData');
-      Sleep(2000);
+      Sleep(1000);
       TThread.Synchronize(nil,
         procedure
         begin
@@ -128,7 +127,10 @@ begin
     Problems := Problems + Format(FLang.Translate('FileNotFound'), [FAtmCfg.FileName]) + sLineBreak;
   Result := Problems.IsEmpty;
   if not Result then
+  begin
     TMessageDialog.ShowWarning(Problems + FLang.Translate('ProgramStopsWorking'));
+    LogWriter.Write(ddError, Self, 'CheckData', Problems);
+  end;
 end;
 
 end.

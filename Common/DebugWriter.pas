@@ -487,7 +487,7 @@ begin
   begin
     EnterCriticalSection(FCriticalSection);
     try
-      Bytes := BytesOf(aInfo);
+      Bytes := WideBytesOf(aInfo);
       FFileStream.WriteBuffer(Bytes[0], Length(Bytes));
     finally
       LeaveCriticalSection(FCriticalSection);
